@@ -1,5 +1,7 @@
 # Spring AI RAG Demo
 
+![1A](https://github.com/LemuelBenitez/Spring-AI-RAG-Run-Through/blob/main/src/images/Screenshot%202026-10-03%20at%203.24.56%E2%80%AFPM.png)
+
 A compact Spring Boot application that demonstrates a local retrieval-augmented generation (RAG) workflow using Spring AI, Elasticsearch, and Ollama. The project is a backend-focused prototype for experimenting with AI chat, embeddings, and vector search in a Java service without relying on cloud-hosted model infrastructure.
 
 This repository is best understood as a learning and prototyping project for:
