@@ -1,5 +1,5 @@
 # Spring AI RAG Demo
-
+## 1A Image
 ![1A](https://github.com/LemuelBenitez/Spring-AI-RAG-Run-Through/blob/main/src/images/Screenshot%202026-10-03%20at%203.24.56%E2%80%AFPM.png)
 
 A compact Spring Boot application that demonstrates a local retrieval-augmented generation (RAG) workflow using Spring AI, Elasticsearch, and Ollama. The project is a backend-focused prototype for experimenting with AI chat, embeddings, and vector search in a Java service without relying on cloud-hosted model infrastructure.
@@ -37,6 +37,13 @@ If the answer is not supported by the context.
     - The embedding model is used to convert documents and user queries into vector representations for similarity search.
     - Due to small model size, the responses may be limited in depth and accuracy, but the workflow demonstrates the RAG pattern effectively.
     - The output isn't deterministic and may vary based on the model's internal state and the retrieved context.
+ 
+## 1B & 1C Image
+![1B](https://github.com/LemuelBenitez/Spring-AI-RAG-Run-Through/blob/main/src/images/Screenshot%202026-10-03%20at%203.27.18%E2%80%AFPM.png)
+![1C](https://github.com/LemuelBenitez/Spring-AI-RAG-Run-Through/blob/main/src/images/Screenshot%202026-10-03%20at%203.27.52%E2%80%AFPM.png)
+
+
+
 ## Architecture
 
 ### Backend-only service
