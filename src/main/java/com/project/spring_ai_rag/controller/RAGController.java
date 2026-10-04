@@ -23,7 +23,9 @@ import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 @RestController
 public class RAGController {
     @Value("classpath:/promptTemlates/systemPromptRandomDataTemplate.st")
-    private Resource promptResource;
+    private Resource assetPromptResource;
+    @Value("classpath:/promptTemlates/hrSystemTemplate.st")
+    private Resource hrSystemPromptResource;
     private final VectorStore vectorStore;
 
     private ChatClient chatClient;
@@ -36,7 +38,7 @@ public class RAGController {
         this.vectorStore = vectorStore;
     }
 
-    @GetMapping("/basic-chat")
+    @GetMapping("/basic-rag-chat")
     public String getRAGResponse(@RequestHeader("username")String username,
                                  @RequestParam String userInput) {
         // 1. Load random data into the vector store
@@ -64,7 +66,36 @@ public class RAGController {
         log.info(prompt);
         //5. Call the chat model with the constructed prompt to generate a RAG response
         return this.chatClient.prompt()
-                .system(promptSystemSpec -> promptSystemSpec.text(promptResource)
+                .system(promptSystemSpec -> promptSystemSpec.text(assetPromptResource)
+                        .param("documents", similarContext))
+                .advisors(advisor -> advisor.param(CONVERSATION_ID, username))
+                .user(userInput)
+                .call().content();
+    }
+
+
+    @GetMapping("/rag-with-document-chat")
+    public String getRAGResponseWithDocuments(@RequestHeader("username")String username,
+                                 @RequestParam String userInput) {
+        // Reminder: we can use prompt stuffing, but when we are dealing with large documents,
+        // we should use RAG to retrieve relevant information from the document and then use that information
+        // to generate a response.
+        SearchRequest searchRequest = SearchRequest.builder()
+                .query(userInput)
+                .topK(3)
+                .similarityThreshold(0.5)
+                .build();
+        List<Document> relevantDocuments =  vectorStore.similaritySearch(searchRequest);
+        //3. Use the retrieved documents to construct a context for the RAG response
+        String similarContext = relevantDocuments.stream()
+                .map(Document::getText)
+                .collect(Collectors.joining(System.lineSeparator()));
+        //4. Construct the prompt for the chat model using the user input and the context from the retrieved documents
+        String prompt = String.format("User Input: %s Context: %s", userInput, similarContext);
+        log.info(prompt);
+        //5. Call the chat model with the constructed prompt to generate a RAG response
+        return this.chatClient.prompt()
+                .system(promptSystemSpec -> promptSystemSpec.text(hrSystemPromptResource)
                         .param("documents", similarContext))
                 .advisors(advisor -> advisor.param(CONVERSATION_ID, username))
                 .user(userInput)
