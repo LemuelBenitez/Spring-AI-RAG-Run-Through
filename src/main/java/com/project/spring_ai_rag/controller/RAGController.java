@@ -35,6 +35,8 @@ public class RAGController {
                          RandomDataLoader randomDataLoader, VectorStore vectorStore) {
         this.chatClient = chatClient.build();
         this.randomDataLoader = randomDataLoader;
+        // Not needed to call loadSentencesIntoVectorStore() here, as it is already called in the
+        // @PostConstruct method of RandomDataLoader -> else will load the same data multiple times into the vector store, which is not efficient
         this.vectorStore = vectorStore;
     }
 

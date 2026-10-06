@@ -1,7 +1,10 @@
 package com.project.spring_ai_rag;
 
+import com.project.spring_ai_rag.rag.HRPolicyLoader;
 import org.junit.jupiter.api.Test;
 import com.project.spring_ai_rag.rag.RandomDataLoader;
+import org.mockito.Mockito;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.chat.model.ChatModel;
@@ -18,6 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 })
 class SpringAiRagApplicationTests {
 
+	@TestBean
+	private VectorStore vectorStore;
+
+	static VectorStore vectorStore() {
+		return Mockito.mock(VectorStore.class);
+	}
+
 	// Keep startup data ingestion from calling Ollama and Elasticsearch in this context test.
 	@TestBean
 	private RandomDataLoader randomDataLoader;
@@ -26,6 +36,18 @@ class SpringAiRagApplicationTests {
 		return new RandomDataLoader(null) {
 			@Override
 			public void loadSentenccesIntoVectorStore() {
+				// This test checks context wiring without ingesting data.
+			}
+		};
+	}
+
+	@TestBean
+	private HRPolicyLoader hrPolicyLoader;
+
+	static HRPolicyLoader hrPolicyLoader() {
+		return new HRPolicyLoader(null) {
+			@Override
+			public void loadPDF() {
 				// This test checks context wiring without ingesting data.
 			}
 		};
